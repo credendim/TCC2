@@ -24,6 +24,18 @@ export default function HomeScreen() {
         </View>
       </View>
       <View style={styles.line}></View>
+      <View style={styles.botao}>
+        <Text style={styles.botaoText}>Minhas Informações</Text>
+      </View>
+      <View style={styles.botao}>
+        <Text style={styles.botaoText}>Documentos</Text>
+      </View>
+      <View style={styles.botao}>
+        <Text style={styles.botaoText}>Faltas</Text>
+      </View>
+      <View style={styles.botao2}>
+        <Text style={styles.botaoText2}>Precia de alguma ajuda?</Text>
+      </View>
     </View>
   );    
 }
@@ -79,5 +91,35 @@ const styles = StyleSheet.create({
     marginTop: 15,
     height: 2,
     alignSelf: 'center',
+  },
+  botao: {
+    alignSelf: 'center',
+    borderRadius: 15,
+    backgroundColor: '#EF7B7B',
+    width: 280,
+    height: 45,
+    justifyContent: 'center',
+    marginTop: 15,
+  }, 
+  botaoText: {
+    fontWeight: '400',
+    fontSize: 20,
+    textAlign: 'center',
+  },
+  botao2: {
+    alignSelf: 'center',
+    borderRadius: 15,
+    borderWidth: 1, 
+    borderColor: 'red',
+    backgroundColor: 'white',
+    width: 180,
+    height: 45,
+    justifyContent: 'center',
+    marginTop: 15,
+  }, 
+  botaoText2: {
+    fontWeight: '400',
+    fontSize: 15,
+    textAlign: 'center',
   },
 });
