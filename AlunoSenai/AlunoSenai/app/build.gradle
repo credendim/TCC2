@@ -1,0 +1,131 @@
+import SQLite from 'react-native-sqlite-storage';
+
+// Abra ou crie o banco de dados
+const db = SQLite.openDatabase(
+  {
+    name: 'AlunoSenai.db',
+    location: 'default',
+  },
+  () => {
+    console.log('Banco de dados aberto');
+    criarTabelas();
+  },
+  error => {
+    console.log('Erro ao abrir o banco de dados: ', error);
+  }
+);
+
+// Função para criar as tabelas Curso e Estudante
+const criarTabelas = () => {
+  db.transaction(tx => {
+    // Criando a tabela Curso
+    tx.executeSql(
+      'DROP TABLE IF EXISTS Curso;',
+      [],
+      () => {
+        console.log('Tabela Curso apagada com sucesso');
+        tx.executeSql(
+          `CREATE TABLE IF NOT EXISTS Curso (
+             SiglaCurso CHAR(7) NOT NULL PRIMARY KEY,
+             Descricao TEXT
+           );`,
+          [],
+          () => {
+            console.log('Tabela Curso criada com sucesso');
+          },
+          error => {
+            console.log('Erro ao criar a tabela Curso: ', error);
+          }
+        );
+      },
+      error => {
+        console.log('Erro ao apagar a tabela Curso: ', error);
+      }
+    );
+
+    // Criando a tabela Estudante com a chave estrangeira para Curso
+    tx.executeSql(
+      'DROP TABLE IF EXISTS Estudante;',
+      [],
+      () => {
+        console.log('Tabela Estudante apagada com sucesso');
+        tx.executeSql(
+          `CREATE TABLE IF NOT EXISTS Estudante (
+             RM INTEGER NOT NULL PRIMARY KEY,
+             PrimeiroNome VARCHAR(30) NOT NULL,
+             NomeMeio VARCHAR(30),
+             UltimoNome VARCHAR(30) NOT NULL,
+             DataNasc DATE,
+             Senha VARCHAR(20) NOT NULL,
+             Foto BLOB,
+             SiglaCurso CHAR(7) NOT NULL,
+             FOREIGN KEY (SiglaCurso) REFERENCES Curso(SiglaCurso)
+           );`,
+          [],
+          () => {
+            console.log('Tabela Estudante criada com sucesso');
+          },
+          error => {
+            console.log('Erro ao criar a tabela Estudante: ', error);
+          }
+        );
+      },
+      error => {
+        console.log('Erro ao apagar a tabela Estudante: ', error);
+      }
+    );
+  });
+};
+
+// Função para inserir um curso
+const inserirCurso = (siglaCurso, descricao) => {
+  db.transaction(tx => {
+    tx.executeSql(
+      'INSERT INTO Curso (SiglaCurso, Descricao) VALUES (?, ?);',
+      [siglaCurso, descricao],
+      () => {
+        console.log('Curso inserido com sucesso');
+      },
+      error => {
+        console.log('Erro ao inserir curso: ', error);
+      }
+    );
+  });
+};
+
+// Função para inserir um estudante
+const inserirEstudante = (rm, primeiroNome, nomeMeio, ultimoNome, dataNasc, senha, foto, siglaCurso) => {
+  db.transaction(tx => {
+    tx.executeSql(
+      'INSERT INTO Estudante (RM, PrimeiroNome, NomeMeio, UltimoNome, DataNasc, Senha, Foto, SiglaCurso) VALUES (?, ?, ?, ?, ?, ?, ?, ?);',
+      [rm, primeiroNome, nomeMeio, ultimoNome, dataNasc, senha, foto, siglaCurso],
+      () => {
+        console.log('Estudante inserido com sucesso');
+      },
+      error => {
+        console.log('Erro ao inserir estudante: ', error);
+      }
+    );
+  });
+};
+
+// Exemplo de leitura de estudantes
+const listarEstudantes = () => {
+  db.transaction(tx => {
+    tx.executeSql(
+      'SELECT * FROM Estudante;',
+      [],
+      (tx, results) => {
+        const rows = results.rows;
+        let estudantes = [];
+        for (let i = 0; i < rows.length; i++) {
+          estudantes.push(rows.item(i));
+        }
+        console.log('Lista de Estudantes:', estudantes);
+      },
+      error => {
+        console.log('Erro ao listar estudantes: ', error);
+      }
+    );
+  });
+};
